@@ -1,0 +1,649 @@
+//2023.06.28	Java期末复习课程
+
+
+
+
+
+
+
+
+
+1.写出程序运行结果
+	class A{
+			public A(){
+					System.out.println("Hello!");
+			}
+			public A(String s){
+					this();
+					System.out.println("My name is"+s);
+			}
+	}
+	class B extends A{
+			public static void main(String[] args){
+				B b=new B("Amy");
+			}
+			public B(){
+				System.out.println("I am Amy.");
+			}
+			public B(String s){
+				super(s);
+				System.out.println("How are you!");
+			}
+	}
+
+		程序运行结果如下：
+
+	Hello!
+	My name is Amy
+	How are you!
+
+	首先，程序从B类的主方法开始执行。在主方法中，创建了一个B类的对象b，并调用了带有一个String类型参数的构造方法，参数为"Amy"。由于B类继承自A类，因此构造B类对象时会先调用父类A的构造方法。
+
+	在A类的构造方法中，首先打印输出"Hello!"。接着，B类的构造方法调用了父类A的带有一个String类型参数的构造方法，这里传入了"Amy"作为参数。在A类的带有一个String类型参数的构造方法中，先调用了A类的无参构造方法（this()），所以又会打印输出"Hello!"。然后，打印输出"My name is Amy"。
+
+	接着，回到B类的构造方法，继续执行后续的代码。在B类的构造方法中，打印输出"I am Amy."。最后，打印输出"How are you!"。
+
+	因此，程序运行结果为：
+
+	Hello!
+	My name is Amy
+	How are you!
+
+
+*******************************************************************************************************
+
+
+2.下列try catch语句块中的第二个语句S1将引起一个异常，试回答下列问题。
+	try{
+		S1;
+		S2;
+	}catch(ExceptionType1 e){	
+	}catch(ExceptionType2 e){
+	}finally{
+		S3;
+	}
+	S4
+	(1)S2会执行吗?
+	(2)如果异常未被捕获，S3会被执行吗?S4会被执行吗?
+	(3)如果catch子句捕获了异常，S3会被执行吗?S4会被执行吗?
+
+
+	(1) S2不会执行。由于S1引发了异常，程序将会跳转到catch子句，而不会继续执行后面的语句。
+	(2) 如果异常未被捕获，S3会被执行。无论是否发生异常，finally块中的代码都会被执行。但是，S4不会被执行，因为异常发生后程序会跳出try-catch-finally语句块。
+	(3) 如果catch子句捕获了异常，S3会被执行。无论是否发生异常，finally块中的代码都会被执行。S4也会被执行，因为异常已经被处理并且程序会继续执行后面的语句。
+
+		如果异常未被捕获，程序会跳转到catch子句之前的位置，不会执行后面的语句，但finally块中的代码仍会被执行。
+		如果catch子句捕获了异常，程序会继续执行catch子句之后的语句，包括finally块中的代码。
+
+
+
+*******************************************************************************************************
+
+
+3.下列代码简单模拟了多个窗口购买火车票，会出现下图问题，请问代码如何修改？（提示：synchronized）
+	class BuyTicket implements Runnable{
+			int ticketnum=10;//共有十张宁波到北京的火车票
+			public void run{
+				for(int i=1;i<=20;i++){//每个窗口有20人在排队买票
+						if(ticketnum>0)//票数大于0，买票
+						System.out.println(Thread.currentThread().getName()+"买到从宁波到北京的第"+ticketnum--+"张车票")；
+				}
+			}
+	}
+	public class Test{
+		public static void main(String[] args){
+				BuyTicket t=new BuyTicket();
+				Thread t1=new Thread(t,"1号窗口");
+				t1.start();
+				Thread t2=new Thread(t,"2号窗口");
+				t2.start();
+				Thread t3=new Thread(t,"3号窗口");
+				t3.start();
+		}
+	}
+
+	问题出在多个线程同时访问ticketnum变量时可能会出现竞争条件，导致数据不一致。为了解决这个问题，可以使用synchronized关键字来保证多个线程访问ticketnum变量时的同步性。
+
+	修改后的代码如下：
+
+	class BuyTicket implements Runnable{
+		private int ticketnum=10;//共有十张宁波到北京的火车票
+	
+		public synchronized void run(){
+			for(int i=1;i<=20;i++){//每个窗口有20人在排队买票
+				if(ticketnum>0){//票数大于0，买票
+					System.out.println(Thread.currentThread().getName()+"买到从宁波到北京的第"+ticketnum--+"张车票");
+				}
+			}
+		}
+	}
+	
+	public class Test{
+		public static void main(String[] args){
+			BuyTicket t=new BuyTicket();
+			Thread t1=new Thread(t,"1号窗口");
+			t1.start();
+			Thread t2=new Thread(t,"2号窗口");
+			t2.start();
+			Thread t3=new Thread(t,"3号窗口");
+			t3.start();
+		}
+	}
+
+	在BuyTicket类的run方法上加上synchronized关键字，这样就可以保证在多线程环境下只有一个线程能够访问run方法，从而避免了多个线程同时修改ticketnum的问题。这样可以保证每个窗口买票时的操作是互斥的，不会出现问题。
+	在BuyTicket类的run方法上添加了synchronized关键字，这样每个窗口在执行run方法时都会获得对象锁，保证了同一时间只有一个窗口在买票。这样就避免了多个窗口同时买同一张票的问题。
+
+*******************************************************************************************************
+
+
+4.阅读以下代码片段，回答问题
+	import java.awt.event.*;
+	import javax.swing.*;
+	import java.awt.*;
+	class EventTest extends JFrame implements ActionListener/*a*/{
+			JButton btn1,btn2;Container ctpn;
+			EventTest(){
+				ctpn=this.getContentPane();//b
+				btn1=new JButton("Blue");
+				btn2=new JButton("Red");
+				btn1.addActionListener(this);//c
+				btn2.addActionListener(this);
+				this.setTitle("Action Event");setSize(200,150);
+				this.setLayout(new FlowLayout(FlowLayout.CENTER)); //d
+				this.ctpn.add(btn1);ctpn.add(btn2);
+			this.setVisible(true);
+		}
+		public void actionPerformed(ActionEvent e){
+				JButton btn=(JButton)e.getSource();//e
+				if(btn==btn1)	ctpn.setBackground(Color.blue);
+				if(btn==btn2)
+				ctpn.setBackground(Color.red);
+		}
+		public static void main(String args[]){
+				EventTest frm=new EventTest();
+		}
+	}
+(1)在"//"后添加注释
+(2)画出程序的运行效果，并说程序完成的功能
+
+(1) 在"//"后添加注释：
+
+	import java.awt.event.*; // 导入事件相关的包
+	import javax.swing.*; // 导入Swing相关的包
+	import java.awt.*; // 导入AWT相关的包
+
+	class EventTest extends JFrame implements ActionListener{ //a 继承JFrame类，并实现ActionListener接口,ActionListener接口是一个事件监听器接口，用于处理按钮点击事件
+
+		JButton btn1,btn2; // 创建两个按钮对象
+		Container ctpn; // 创建一个容器对象
+
+		EventTest(){
+			ctpn=this.getContentPane();//b getContentPane()方法用于获取容器的内容面板。
+			btn1=new JButton("Blue"); // 创建名为"Blue"的按钮
+			btn2=new JButton("Red"); // 创建名为"Red"的按钮
+			btn1.addActionListener(this); //c 为按钮添加事件监听器,addActionListener(this)方法将当前类实例作为按钮的事件监听器
+			btn2.addActionListener(this); //c 为按钮添加事件监听器
+			this.setTitle("Action Event"); // 设置窗口标题为"Action Event"
+			setSize(200,150); // 设置窗口大小为200x150像素
+			this.setLayout(new FlowLayout(FlowLayout.CENTER)); //d 设置布局为居中对齐的流式布局
+			this.ctpn.add(btn1); // 将"Blue"按钮添加到容器中
+			ctpn.add(btn2); // 将"Red"按钮添加到容器中
+			this.setVisible(true); // 设置窗口可见
+		}
+
+		public void actionPerformed(ActionEvent e){
+			JButton btn=(JButton)e.getSource(); //e 获取触发事件的按钮对象
+			if(btn==btn1) ctpn.setBackground(Color.blue); // 如果是"Blue"按钮触发的事件，将容器背景设置为蓝色
+			if(btn==btn2) ctpn.setBackground(Color.red); // 如果是"Red"按钮触发的事件，将容器背景设置为红色
+		}
+
+		public static void main(String args[]){
+			EventTest frm=new EventTest(); // 创建EventTest对象
+		}
+	}
+
+(2) 程序的运行效果：
+
+程序创建了一个窗口，窗口标题为"Action Event"，大小为200x150像素。窗口中有两个按钮，一个是"Blue"按钮，另一个是"Red"按钮。当点击"Blue"按钮时，窗口的背景颜色会变为蓝色；当点击"Red"按钮时，窗口的背景颜色会变为红色。
+
+程序完成的功能是：该程序演示了如何使用Java的事件处理机制，通过按钮的事件监听器，实现了当点击不同的按钮时，改变窗口的背景颜色。
+
+
+
+
+
+5.下列代码完成了邮箱系统的登陆功能,请在注释位置编写相应代码，写出运行结果。相关信息和Java帮助如下:
+	User表：id	username	password
+			1 	zhangsan	123
+			2 	lisi		234
+	数据库操作类已实现，大纲视图如下：
+		JDBCUtils
+			url:String
+			user:String
+			password:String
+			driver:String
+			{...}
+			getConnection():Connection
+			close(Statement,Connection):void
+			close(ResultSet,Statement,Connection):void
+	接口Connection下的方法：
+			Statement	createStatement()			创建一个Statement对象来将SQL语句发送到数据库
+	接口Statement下的方法：
+			ResultSet	executeQuery(String sql)	执行给定的SQL语句，该语句返回单个ResultSet对象。
+	接口ResultSet下的方法：
+			boolean		next()						将光标从当前位置先前移一行。
+
+
+
+	import java.sql.*;
+	public class LoginTest{
+			public static void main(String[] args){
+				String username="lisi";
+				String pasasword="123";
+				boolean flag=new LoginTest().login(username,password);
+				if(flag)	System.out.println("登陆成功");
+				else		System.out.println("用户名或密码错误");
+			}
+			public boolean login(String username,String password){
+					if(username==null||password==null){
+								return false;
+					}
+					Connection conn=null;PreparedStatement pstmt=null;ResultSet rs=null;
+					try{
+							conn=JDBCUtils.getConnection();
+								//添加数据库操作代码
+					}catch(SQLException e){
+								e.printStackTrace();
+					}finally{
+								JDBCUtils.close(rs,pstmt,conn);
+					}
+					return false;
+			}
+	}
+
+	answer:
+
+
+
+	pstmt = conn.prepareStatement("SELECT * FROM User WHERE username = ? AND password = ?");
+	pstmt.setString(1, username);
+	pstmt.setString(2, password);
+	rs = pstmt.executeQuery();
+	if(rs.next()){
+		return true; // 用户名和密码匹配，登录成功
+	}
+
+
+
+	
+
+	import java.sql.*;
+
+	public class LoginTest{
+		public static void main(String[] args){
+			String username="lisi";
+			String password="123";
+			boolean flag=new LoginTest().login(username,password);
+			if(flag)    System.out.println("登陆成功");
+			else        System.out.println("用户名或密码错误");
+		}
+		public boolean login(String username,String password){
+			if(username==null||password==null){
+				return false;
+			}
+			Connection conn=null;PreparedStatement pstmt=null;ResultSet rs=null;
+			try{
+				conn=JDBCUtils.getConnection();
+				pstmt = conn.prepareStatement("SELECT * FROM User WHERE username = ? AND password = ?");
+				pstmt.setString(1, username);
+				pstmt.setString(2, password);
+				rs = pstmt.executeQuery();
+				if(rs.next()){
+					return true;
+				}
+			}catch(SQLException e){
+				e.printStackTrace();
+			}finally{
+				JDBCUtils.close(rs,pstmt,conn);
+			}
+			return false;
+		}
+	}
+
+	运行结果：
+	用户名或密码错误
+
+	程序通过调用login方法进行登录验证，传入用户名和密码参数。在login方法中，首先判断用户名和密码是否为空，如果为空则直接返回false。然后获取数据库连接，通过PreparedStatement对象执行SQL语句查询用户表，使用占位符设置用户名和密码参数。如果查询结果存在，则返回true表示登录成功，否则返回false表示用户名或密码错误。
+
+	在main方法中，调用login方法并根据返回结果输出相应的提示信息。在本例中，用户名为"lisi"，密码为"123"，所以输出结果为"用户名或密码错误"。
+
+
+
+
+	
+6.下面有两个Java源文件(Lute.java和Music.java)，阅读程序，回答问题。
+	a:Lute.java
+			package mypack;
+			interface Instrument{//乐器
+					int NUM=5;
+					void play();
+					String what();
+					void adjust();
+			}
+
+			class Wind implements Instrument{//管乐器
+					public void play(){
+							System.out.println("Wind.play()");
+					}
+					public String what() {return "Wind";}
+					public void adjust() {}
+			}
+			class Stringed{//有弦乐器
+					int StringNum;
+					Stringed(int num){
+							this.StringNum=num;
+					}
+			}
+
+			public class Lute extends Stringed implements Instruments{//古琵琶
+					public Lute(int num){
+							super(num);
+					}
+					public void play(){
+							System.out.println("lute.play()");
+					}
+					public String what() {return "lute"};
+					public void adjust() {}
+				}
+	b.Music.java
+			import mypack.*
+			public class Music{
+					public static void main(String[] args){
+							Lute test=new Lute(6);
+							test.play();
+					}
+			}	
+
+	(1)以上代码分别有哪些接口、类，在哪些包中，有公共类吗？
+	(2)类Wind中的adjust()方法是抽象方法吗？能省略吗？为什么？
+	(3)类Lute和类Stringed是什么关系？Lute类中有成员变量吗？
+	(4)类Lute中的方法是public修饰符能省略吗？为什么？
+	(5)请写出程序的运行结果。
+
+	(1)以上代码接口有"Instrument",类有'Wind','Stringed','Lute','Music',都在'mypack'包中。
+		在'Lute.java'中有一个公共类'Lute'。在'Music.java'文件中有一个公共类'Music'。
+	(2)类Wind中的adjust()方法不是抽象方法。它不能省略。如果省略adjust()方法的实现，则Wind类必须声明为抽象类。
+	(3)类Lute是类Stringed的子类。它们之间是继承关系。Lute类中有一个名为StringNum的成员变量。
+	(4) 类Lute中的方法的修饰符是public，可以省略。这是因为Lute类实现了Instrument接口，在接口中的所有方法都是公共的，因此在实现接口方法时，默认的访问修饰符是public。
+	(5) 程序的运行结果是：lute.play()
+
+二.程序设计题
+
+1.“具有报警功能的移门”，针对上述描述，请用类、接口等面向对象知识进行设计实现，方法中，不必写出具体实现代码，用System.out.println()。
+
+	根据描述，我们可以设计以下类和接口来实现具有报警功能的移门：
+
+	1. 接口：Alarm
+	   - 方法：void alarm()，用于触发报警功能。
+
+	2. 类：Door
+	   - 属性：isOpen（表示门的状态，true表示门开着，false表示门关着）
+	   - 方法：void open()，用于打开门
+	   - 方法：void close()，用于关闭门
+	   - 方法：void alarm()，实现Alarm接口中的方法，用于触发报警功能
+	   - 方法：void move()，用于移动门的位置
+	   - 方法：void displayStatus()，用于显示门的当前状态
+
+	设计实现如下：
+
+	interface Alarm {
+	    void alarm();
+	}
+
+	class Door implements Alarm {
+	    private boolean isOpen;
+
+	    public void open() {
+	        isOpen = true;
+	        System.out.println("门已打开");
+	    }
+
+	    public void close() {
+	        isOpen = false;
+	        System.out.println("门已关闭");
+	    }
+
+	    public void alarm() {
+	        System.out.println("门正在报警");
+	    }
+
+	    public void move() {
+	        System.out.println("门正在移动");
+	    }
+
+	    public void displayStatus() {
+	        System.out.println("门的状态：" + (isOpen ? "开着" : "关着"));
+	    }
+	}
+	这样设计的类和接口可以实现具有报警功能的移门。Door类实现了Alarm接口，并实现了alarm()方法，用于触发报警功能。同时，Door类还具有打开门、关闭门、移动门、显示门状态的功能。
+
+2.数据可视化在统计报表有重要应用，柱状图以及折线图等图形是以不同视角展示数据。假设对于同一份二维数据，系统要求根据不同情景，展示不同图形(柱形图或折线图)，且数据变化，图形自动变化(刷新)，而且，需要预留接口，以方便需求升级，如同一份数据还支持饼图。为了满足以上需求，请设计类系，并写一个测试类，进行模拟。具体要求：
+	(a)	设计一个数据类，且有一份订阅者列表，可具备对订阅者(图形)列表的管理功能(删除与增加)，当数据变化时，自动触发订阅者更新图形。
+	(b)	设计一个图形的抽象类，具备根据数据绘制图形的功能，并具备订阅数据和取消订阅的功能。
+	(c)	写一个测试类，模拟上述过程。
+	备注：方法中，不必写出具体实现代码，用System.out.println()说明即可。
+
+
+
+	根据需求，我们可以设计以下类来满足要求：
+
+	1. 数据类：Data
+	   - 属性：subscribers（订阅者列表）
+	   - 方法：addSubscriber(Subscriber subscriber)，用于添加订阅者
+	   - 方法：removeSubscriber(Subscriber subscriber)，用于移除订阅者
+	   - 方法：updateData()，用于更新数据并通知订阅者
+
+	2. 抽象类：Graph
+	   - 属性：data（数据对象）
+	   - 方法：subscribe()，用于订阅数据
+	   - 方法：unsubscribe()，用于取消订阅数据
+	   - 抽象方法：draw()，用于根据数据绘制图形
+
+	3. 具体图形类：BarGraph（柱状图）和LineGraph（折线图）
+	   - 方法：draw()，实现Graph抽象类中的draw()方法，根据数据绘制柱状图或折线图
+
+	设计实现如下：
+
+
+	import java.util.ArrayList;
+	import java.util.List;
+
+	// 数据类
+	class Data {
+	    private List subscribers;
+
+	    public Data() {
+	        subscribers = new ArrayList<>();
+	    }
+
+	    public void addSubscriber(Graph subscriber) {
+	        subscribers.add(subscriber);
+	    }
+
+	    public void removeSubscriber(Graph subscriber) {
+	        subscribers.remove(subscriber);
+	    }
+
+	    public void updateData() {
+	        // 更新数据
+	        System.out.println("数据更新");
+	        
+	        // 通知订阅者更新图形
+	        for (Graph subscriber : subscribers) {
+	            subscriber.draw();
+	        }
+	    }
+	}
+
+	// 抽象图形类
+	abstract class Graph {
+	    protected Data data;
+
+	    public Graph(Data data) {
+	        this.data = data;
+	    }
+
+	    public void subscribe() {
+	        data.addSubscriber(this);
+	    }
+
+	    public void unsubscribe() {
+	        data.removeSubscriber(this);
+	    }
+
+	    public abstract void draw();
+	}
+
+	// 具体图形类：柱状图
+	class BarGraph extends Graph {
+	    public BarGraph(Data data) {
+	        super(data);
+	    }
+
+	    public void draw() {
+	        System.out.println("绘制柱状图");
+	    }
+	}
+
+	// 具体图形类：折线图
+	class LineGraph extends Graph {
+	    public LineGraph(Data data) {
+	        super(data);
+	    }
+
+	    public void draw() {
+	        System.out.println("绘制折线图");
+	    }
+	}
+
+	// 测试类
+	public class Test {
+	    public static void main(String[] args) {
+	        // 创建数据对象
+	        Data data = new Data();
+
+	        // 创建柱状图和折线图
+	        Graph barGraph = new BarGraph(data);
+	        Graph lineGraph = new LineGraph(data);
+
+	        // 订阅数据
+	        barGraph.subscribe();
+	        lineGraph.subscribe();
+
+	        // 更新数据，图形自动变化
+	        data.updateData();
+
+	        // 取消订阅折线图
+	        lineGraph.unsubscribe();
+
+	        // 更新数据，只有柱状图会变化
+	        data.updateData();
+	    }
+	}
+	根据需求设计了数据类（Data）、抽象图形类（Graph）以及具体图形类（BarGraph和LineGraph）。测试类（Test）中模拟了订阅数据、更新数据以及取消订阅的过程。
+
+	测试类中先创建了数据对象（Data），然后创建了柱状图（BarGraph）和折线图（LineGraph）。接着订阅了数据，然后更新数据，可以看到柱状图和折线图都会自动绘制图
+	形。最后取消了对折线图的订阅，再次更新数据时，只有柱状图会变化。
+
+3.当前，在我国，不同的企业类型有不同的税收计算方法，假设有高新企业、外资企业、普通企业。现有税收系统，可计算每一类企业的收税，也可自动计算某个地区(如鄞州区)的税收，一般地，某个地区的企业都有不同类型的企业存在。为了满足以上需求，请设计类系，并写一个测试类，进行模拟。具体要求：
+(a)	设计一抽象类：企业，具备计算税收的功能。
+(b)	高新企业、外资企业、普通企业应该是企业的子类，都具有计算税收的功能。
+(c)	设计一个地区类，它是由不同类型的企业构成，具备计算地区税收的功能。
+(d)	写一个测试类，进行模拟。
+备注：方法中，不必写出具体实现代码，用System.out.println()，或者直接返回一个值进行说明即可。提示：抽象类、方法重写、泛型等的应用。
+
+	根据需求，我们可以设计以下类来满足要求：
+
+	1. 抽象类：Enterprise（企业）
+	   - 方法：calculateTax()，用于计算税收
+
+	2. 子类：HighTechEnterprise（高新企业）、ForeignEnterprise（外资企业）、NormalEnterprise（普通企业）
+	   - 方法：calculateTax()，重写父类的计算税收方法
+
+	3. 类：Region（地区）
+	   - 属性：enterprises（不同类型的企业列表）
+	   - 方法：addEnterprise(Enterprise enterprise)，用于添加企业
+	   - 方法：removeEnterprise(Enterprise enterprise)，用于移除企业
+	   - 方法：calculateRegionTax()，用于计算地区税收
+
+	设计实现如下：
+
+
+	abstract class Enterprise {
+	    public abstract double calculateTax();
+	}
+
+	class HighTechEnterprise extends Enterprise {
+	    public double calculateTax() {
+	        System.out.println("计算高新企业的税收");
+	        return 0.0;
+	    }
+	}
+
+	class ForeignEnterprise extends Enterprise {
+	    public double calculateTax() {
+	        System.out.println("计算外资企业的税收");
+	        return 0.0;
+	    }
+	}
+
+	class NormalEnterprise extends Enterprise {
+	    public double calculateTax() {
+	        System.out.println("计算普通企业的税收");
+	        return 0.0;
+	    }
+	}
+
+	class Region {
+	    private List enterprises;
+
+	    public Region() {
+	        enterprises = new ArrayList<>();
+	    }
+
+	    public void addEnterprise(Enterprise enterprise) {
+	        enterprises.add(enterprise);
+	    }
+
+	    public void removeEnterprise(Enterprise enterprise) {
+	        enterprises.remove(enterprise);
+	    }
+
+	    public double calculateRegionTax() {
+	        double regionTax = 0.0;
+	        for (Enterprise enterprise : enterprises) {
+	            regionTax += enterprise.calculateTax();
+	        }
+	        return regionTax;
+	    }
+	}
+
+	public class Test {
+	    public static void main(String[] args) {
+	        // 创建地区对象
+	        Region region = new Region();
+
+	        // 添加不同类型的企业
+	        region.addEnterprise(new HighTechEnterprise());
+	        region.addEnterprise(new ForeignEnterprise());
+	        region.addEnterprise(new NormalEnterprise());
+
+	        // 计算地区税收
+	        double regionTax = region.calculateRegionTax();
+	        System.out.println("地区税收：" + regionTax);
+	    }
+	}
+	根据需求设计了抽象类Enterprise、子类HighTechEnterprise、ForeignEnterprise和NormalEnterprise，以及类Region。测试类（Test）中模拟了创建地区对象、添加不同类型的企业、计算地区税收的过程。
+
+	测试类中先创建了地区对象（Region），然后添加了高新企业（HighTechEnterprise）、外资企业（ForeignEnterprise）和普通企业（NormalEnterprise）。接着计算地区税收，可以看到会调用各个企业子类的计算税收方法，并计算出地区的总税收。最后将地区税收输出。
+
