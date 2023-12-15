@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/C语言程序设计入门过关题集-顺序结构",
-      "program": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/C语言程序设计入门过关题集-顺序结构/build/Debug/outDebug",
+      "cwd": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/2022-2023第二学期单开班第3次月考",
+      "program": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/2022-2023第二学期单开班第3次月考/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
