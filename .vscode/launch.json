@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/C语言程序设计入门过关题集-顺序结构",
+      "program": "c:/Files/github/cloud/code4sk/c/sourcecode/朱森森带领的奇妙冒险/C语言程序设计入门过关题集-顺序结构/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
