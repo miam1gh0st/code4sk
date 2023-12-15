@@ -1,33 +1,35 @@
 /*
-7-2 Çó¼òµ¥½»´íÐòÁÐÇ°NÏîºÍ
-·ÖÊý 10
-×÷Õß C¿Î³Ì×é
-µ¥Î» Õã½­´óÑ§
-±¾ÌâÒªÇó±àÐ´³ÌÐò,¼ÆËãÐòÁÐ 1 - 1/4 + 1/7 - 1/10 + ... µÄÇ°NÏîÖ®ºÍ¡£
+7-2 æ±‚ç®€å•äº¤é”™åºåˆ—å‰Né¡¹å’Œ
+åˆ†æ•° 10
+ä½œè€… Cè¯¾ç¨‹ç»„
+å•ä½ æµ™æ±Ÿå¤§å­¦
+æœ¬é¢˜è¦æ±‚ç¼–å†™ç¨‹åº,è®¡ç®—åºåˆ— 1 - 1/4 + 1/7 - 1/10 + ... çš„å‰Né¡¹ä¹‹å’Œã€‚
 
-ÊäÈë¸ñÊ½:
-ÊäÈëÔÚÒ»ÐÐÖÐ¸ø³öÒ»¸öÕýÕûÊýN¡£
+è¾“å…¥æ ¼å¼:
+è¾“å…¥åœ¨ä¸€è¡Œä¸­ç»™å‡ºä¸€ä¸ªæ­£æ•´æ•°Nã€‚
 
-Êä³ö¸ñÊ½:
-ÔÚÒ»ÐÐÖÐ°´ÕÕ¡°sum = S¡±µÄ¸ñÊ½Êä³ö²¿·ÖºÍµÄÖµS£¬¾«È·µ½Ð¡ÊýµãºóÈýÎ»¡£ÌâÄ¿±£Ö¤¼ÆËã½á¹û²»³¬¹ýË«¾«¶È·¶Î§¡£
+è¾“å‡ºæ ¼å¼:
+åœ¨ä¸€è¡Œä¸­æŒ‰ç…§â€œsum = Sâ€çš„æ ¼å¼è¾“å‡ºéƒ¨åˆ†å’Œçš„å€¼Sï¼Œç²¾ç¡®åˆ°å°æ•°ç‚¹åŽä¸‰ä½ã€‚é¢˜ç›®ä¿è¯è®¡ç®—ç»“æžœä¸è¶…è¿‡åŒç²¾åº¦èŒƒå›´ã€‚
 
-ÊäÈëÑùÀý:
+è¾“å…¥æ ·ä¾‹:
 10
-Êä³öÑùÀý:
+è¾“å‡ºæ ·ä¾‹:
 sum = 0.819
 */
 
-#include<stdio.h>
-int main(){
+#include <stdio.h>
+int main()
+{
 	int N;
-	scanf("%d",&N);
-	int flag=1;
-	int a=1;
-	double sum=0;
-	for(int i=1;i<=N;i++,a+=3){
-		sum+=1.0/a*flag;
-		flag=-flag;
+	scanf("%d", &N);
+	int flag = 1;
+	int a = 1;
+	double sum = 0;
+	for (int i = 1; i <= N; i++, a += 3)
+	{
+		sum += 1.0 / a * flag;
+		flag = -flag;
 	}
-	printf("sum = %.3lf",sum);
+	printf("sum = %.3lf", sum);
 	return 0;
 }
